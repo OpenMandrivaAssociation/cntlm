@@ -1,0 +1,56 @@
+diff -urNp --exclude-from=/home/mdomsch/excludes --minimal cntlm-0.35.1.orig/Makefile cntlm-0.35.1/Makefile
+--- cntlm-0.35.1.orig/Makefile	2007-11-20 18:18:24.000000000 -0600
++++ cntlm-0.35.1/Makefile	2010-08-25 12:24:44.556317839 -0500
+@@ -13,41 +13,34 @@ MANDIR=/usr/local/man
+ #
+ CC=gcc
+ OBJS=utils.o ntlm.o xcrypt.o config.o socket.o acl.o auth.o http.o proxy.o 
+-CFLAGS=$(FLAGS) -std=c99 -Wall -pedantic -O3 -D__BSD_VISIBLE -D_ALL_SOURCE -D_XOPEN_SOURCE=600 -D_POSIX_C_SOURCE=200112 -D_ISOC99_SOURCE -D_REENTRANT -DVERSION=\"`cat VERSION`\"
+-LDFLAGS=-lpthread
++MYFLAGS=-std=c99 -pedantic -D__BSD_VISIBLE -D_ALL_SOURCE -D_XOPEN_SOURCE=600 -D_POSIX_C_SOURCE=200112 -D_ISOC99_SOURCE -D_REENTRANT -DVERSION=\"`cat VERSION`\"
++MYLDFLAGS=-lpthread
+ NAME=cntlm
+ VER=`cat VERSION`
+ DIR=`pwd`
+ 
+ $(NAME): configure-stamp $(OBJS)
+ 	@echo "Linking $@"
+-	@$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS)
++	$(CC) $(CFLAGS) $(MYCFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(MYLDFLAGS)
+ 
+ proxy.o: proxy.c
+ 	@echo "Compiling $<"
+ 	@if [ -z "$(SYSCONFDIR)" ]; then \
+-		$(CC) $(CFLAGS) -c proxy.c -o $@; \
++		$(CC) $(CFLAGS) $(MYFLAGS) -c proxy.c -o $@; \
+ 	else \
+-		$(CC) $(CFLAGS) -DSYSCONFDIR=\"$(SYSCONFDIR)\" -c proxy.c -o $@; \
++		$(CC) $(CFLAGS) $(MYFLAGS) -DSYSCONFDIR=\"$(SYSCONFDIR)\" -c proxy.c -o $@; \
+ 	fi
+ 
+ .c.o:
+ 	@echo "Compiling $<"
+-	@$(CC) $(CFLAGS) -c -o $@ $<
++	$(CC) $(CFLAGS) $(MYFLAGS) -c -o $@ $<
+ 
+ install: $(NAME)
+-	# AIX?
+-	if [ -f /usr/bin/oslevel ]; then \
+-		install -O root -G system -M 755 -S -f $(BINDIR) $(NAME); \
+-		install -O root -G system -M 644 -f $(MANDIR)/man1 doc/$(NAME).1; \
+-		install -O root -G system -M 600 -c $(SYSCONFDIR) doc/$(NAME).conf; \
+-	else \
+-		install -D -o root -g root -m 755 -s $(NAME) $(BINDIR)/$(NAME); \
+-		install -D -o root -g root -m 644 doc/$(NAME).1 $(MANDIR)/man1/$(NAME).1; \
+-		[ -f $(SYSCONFDIR)/$(NAME).conf -o -z "$(SYSCONFDIR)" ] \
+-			|| install -D -o root -g root -m 600 doc/$(NAME).conf $(SYSCONFDIR)/$(NAME).conf; \
+-	fi
+-	@echo; echo "Cntlm will look for configuration in $(SYSCONFDIR)/$(NAME).conf"
++	install -D -m 755 $(NAME) $(BINDIR)/$(NAME); \
++	install -D -m 644 doc/$(NAME).1 $(MANDIR)/man1/$(NAME).1; \
++	[ -f $(SYSCONFDIR)/$(NAME).conf -o -z "$(SYSCONFDIR)" ] \
++			|| install -D -m 600 doc/$(NAME).conf $(SYSCONFDIR)/$(NAME).conf; \
++	echo; echo "Cntlm will look for configuration in $(SYSCONFDIR)/$(NAME).conf"
+ 
+ rpm:
+ 	if [ `id -u` = 0 ]; then \
