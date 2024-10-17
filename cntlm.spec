@@ -4,7 +4,7 @@ Version:	0.92.3
 Release:	1
 License:	GPLv2+
 Group:		System Environment/Daemons
-URL:		http://cntlm.sourceforge.net/
+URL:		https://cntlm.sourceforge.net/
 Source0:	http://sourceforge.net/projects/cntlm/files/cntlm/%{name}-%{version}.tar.bz2
 Source1:	cntlm.init
 Source2:	cntlm.init.fedora
