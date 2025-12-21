@@ -12,6 +12,11 @@ Source3:	cntlm.sysconfig
 Patch0:		cntlm-0.35.1-Makefile.patch
 Requires(pre):	shadow-utils
 
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 %description
 Cntlm is a fast and efficient NTLM proxy, with support for TCP/IP tunneling,
 authenticated connection caching, ACLs, proper daemon logging and behavior
